@@ -2,6 +2,7 @@
 
 namespace Modules;
 
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -16,13 +17,17 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Nwidart\Modules\Facades\Module;
+use Symfony\Component\Finder\Finder;
+use ReflectionClass;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel
             ->default()
             ->id('admin')
             ->path('admin')
@@ -51,8 +56,62 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->plugins([
+                FilamentShieldPlugin::make()
+            ])
             ->authMiddleware([
                 Authenticate::class,
+            ])->navigationGroups([
+                'School',
+                'Booking',
+                'Members',
             ]);
+
+        $this->extendDiscoverResources($panel);
+
+        return $panel;
+    }
+
+    protected function extendDiscoverResources(Panel $panel): void
+    {
+        $resources = [];
+
+        foreach (Module::allEnabled() as $module) {
+            $resourcePath = $module->getExtraPath('Filament/Resources');
+            $namespace = "Modules\\{$module->getName()}\\Filament\\Resources";
+
+            if (! is_dir($resourcePath)) {
+                continue;
+            }
+
+            $files = Finder::create()
+                ->files()
+                ->in($resourcePath)
+                ->depth('== 0')
+                ->name('*.php');
+
+            foreach ($files as $file) {
+                $class = "{$namespace}\\" . $file->getBasename('.php');
+
+                if (! class_exists($class)) {
+                    continue;
+                }
+
+                try {
+                    $reflection = new ReflectionClass($class);
+
+                    if (
+                        $reflection->isSubclassOf(\Filament\Resources\Resource::class) &&
+                        ! $reflection->isAbstract()
+                    ) {
+                        $resources[] = $class;
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning("Filament resource autoload failed for [{$class}]: {$e->getMessage()}");
+                }
+            }
+        }
+
+        $panel->resources($resources);
     }
 }
