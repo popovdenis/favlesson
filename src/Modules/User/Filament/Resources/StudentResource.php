@@ -3,7 +3,9 @@
 namespace Modules\User\Filament\Resources;
 
 use Modules\User\Filament\Resources\StudentResource\RelationManagers;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables\Table;
 use Modules\User\Models\User;
 
 class StudentResource extends Resource
@@ -13,6 +15,16 @@ class StudentResource extends Resource
     protected static ?string $breadcrumb = 'Members';
     protected static ?string $navigationLabel = 'Students';
     protected static ?string $navigationIcon = 'heroicon-o-user';
+
+    public static function form(Form $form): Form
+    {
+        return UserResource::form($form);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return UserResource::table($table);
+    }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {

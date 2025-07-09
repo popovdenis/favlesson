@@ -76,6 +76,18 @@ class UserResource extends Resource
                     ->extraAttributes(['style' => 'width: 200px'])
                     ->columnSpanFull(),
 
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->label('Password')
+                    ->columnSpan(6),
+
+                Forms\Components\TextInput::make('password_confirmation')
+                    ->password()
+                    ->label('Confirm New Password')
+                    ->dehydrated(false)
+                    ->same('password')
+                    ->columnSpan(6),
+
                 Forms\Components\Toggle::make('change_password')
                     ->label('Change Password')
                     ->reactive()

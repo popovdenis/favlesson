@@ -21,7 +21,7 @@ class TeacherResource extends Resource
     {
         return UserResource::form($form)->schema(array_merge(
             UserResource::form($form)->getComponents(),
-            self::getTeacherForm()
+//            self::getTeacherForm()
         ));
     }
 
