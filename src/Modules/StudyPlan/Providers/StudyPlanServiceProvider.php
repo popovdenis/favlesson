@@ -43,7 +43,9 @@ class StudyPlanServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            \Modules\StudyPlan\Console\GenerateSlotsCommand::class
+        ]);
     }
 
     /**
