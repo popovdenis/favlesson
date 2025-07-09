@@ -63,6 +63,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])->navigationGroups([
                 'School',
+                'Education',
                 'Members',
             ]);
 

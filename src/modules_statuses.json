@@ -3,5 +3,6 @@
     "Base": true,
     "Classes": true,
     "Group": true,
-    "Subject": true
+    "Subject": true,
+    "StudyPlan": true
 }
