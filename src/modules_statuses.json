@@ -4,5 +4,6 @@
     "Classes": true,
     "Group": true,
     "Subject": true,
-    "StudyPlan": true
+    "StudyPlan": true,
+    "Term": true
 }

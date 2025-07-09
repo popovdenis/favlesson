@@ -56,7 +56,17 @@ class StudyPlanResource extends Resource
             Tables\Columns\TextColumn::make('subject.title')->label('Subject')->sortable()->searchable(),
             Tables\Columns\TextColumn::make('year')->sortable(),
             Tables\Columns\TextColumn::make('hours_per_year')->label('Hours/year'),
-        ])->filters([]);
+        ])
+        ->filters([])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ]);
     }
 
     public static function getPages(): array
