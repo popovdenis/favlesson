@@ -15,7 +15,7 @@ class StudyPlanResource extends Resource
     protected static ?string $navigationGroup = 'Education';
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?string $label = 'Study Plan';
-    protected static ?string $navigationLabel = 'Education';
+    protected static ?string $navigationLabel = 'Study Plans';
     protected static ?string $pluralLabel = 'Study Plans';
     protected static ?int $navigationSort = 1;
 

@@ -6,6 +6,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Modules\Subject\Models\Subject;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -64,6 +65,11 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return $this->firstname . ' ' . $this->lastname;
+    }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class)->withTimestamps();
     }
 
     public function canAccessPanel(Panel $panel): bool

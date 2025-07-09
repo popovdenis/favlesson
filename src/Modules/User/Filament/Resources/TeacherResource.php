@@ -3,6 +3,7 @@
 namespace Modules\User\Filament\Resources;
 
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
@@ -21,27 +22,15 @@ class TeacherResource extends Resource
     {
         return UserResource::form($form)->schema(array_merge(
             UserResource::form($form)->getComponents(),
-//            self::getTeacherForm()
+            [
+                Select::make('subjects')
+                    ->label('Subjects')
+                    ->multiple()
+                    ->relationship('subjects', 'title')
+                    ->preload()
+                    ->searchable(),
+            ]
         ));
-    }
-
-    protected static function getTeacherForm()
-    {
-        return [
-            Forms\Components\Section::make('Schedule Timesheet')
-                ->schema([
-                    Forms\Components\Grid::make(12)->schema([
-                        static::makeDaySlotSection('monday', 'Monday', 'timesheet')->columnSpan(12),
-                        static::makeDaySlotSection('tuesday', 'Tuesday', 'timesheet')->columnSpan(12),
-                        static::makeDaySlotSection('wednesday', 'Wednesday', 'timesheet')->columnSpan(12),
-                        static::makeDaySlotSection('thursday', 'Thursday', 'timesheet')->columnSpan(12),
-                        static::makeDaySlotSection('friday', 'Friday', 'timesheet')->columnSpan(12),
-                        static::makeDaySlotSection('saturday', 'Saturday', 'timesheet')->columnSpan(12),
-                        static::makeDaySlotSection('sunday', 'Sunday', 'timesheet')->columnSpan(12),
-                    ])
-                ])
-                ->visible(fn ($record) => $record?->hasRole('Teacher'))
-        ];
     }
 
     public static function table(Table $table): Table
