@@ -1,4 +1,7 @@
 {
     "User": true,
-    "Base": true
+    "Base": true,
+    "Classes": true,
+    "Group": true,
+    "Subject": true
 }
