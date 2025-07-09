@@ -3,16 +3,12 @@
 namespace Modules\Group\Filament\Resources;
 
 use Filament\Forms;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Modules\Group\Filament\Resources\GroupResource\RelationManagers\StudyPlansRelationManager;
 use Modules\Group\Models\Group;
-
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
 
 class GroupResource extends Resource
 {
