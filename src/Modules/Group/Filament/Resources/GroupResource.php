@@ -1,21 +1,21 @@
 <?php
 
-namespace Modules\Subject\Filament\Resources;
+namespace Modules\Group\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Modules\Subject\Models\Subject;
+use Modules\Group\Models\Group;
 
-class SubjectResource extends Resource
+class GroupResource extends Resource
 {
-    protected static ?string $model = Subject::class;
+    protected static ?string $model = Group::class;
     protected static ?string $navigationGroup = 'School';
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
-    protected static ?string $navigationLabel = 'Subjects';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationLabel = 'Groups';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -48,9 +48,9 @@ class SubjectResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => SubjectResource\Pages\ListSubjects::route('/'),
-            'create' => SubjectResource\Pages\CreateSubject::route('/create'),
-            'edit'   => SubjectResource\Pages\EditSubject::route('/{record}/edit'),
+            'index'  => GroupResource\Pages\ListGroup::route('/'),
+            'create' => GroupResource\Pages\CreateGroup::route('/create'),
+            'edit'   => GroupResource\Pages\EditGroup::route('/{record}/edit'),
         ];
     }
 }
