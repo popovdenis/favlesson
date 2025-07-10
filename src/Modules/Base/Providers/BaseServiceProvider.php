@@ -1,23 +1,27 @@
 <?php
+declare(strict_types=1);
 
-namespace Modules\User\Providers;
+namespace Modules\Base\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\User\Contracts\TeacherRepositoryInterface;
-use Modules\User\Contracts\UserRepositoryInterface;
-use Modules\User\Models\UserRepository;
+use Modules\Base\Contracts\SearchCriteriaInterface;
+use Modules\Base\Framework\SearchCriteria;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class UserServiceProvider extends ServiceProvider
+/**
+ * Class BaseServiceProvider
+ *
+ * @package Modules\Base\Providers
+ */
+class BaseServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'User';
-
-    protected string $nameLower = 'user';
+    protected string $name = 'Base';
+    protected string $nameLower = 'base';
 
     /**
      * Boot the application events.
@@ -28,7 +32,6 @@ class UserServiceProvider extends ServiceProvider
         $this->registerCommandSchedules();
         $this->registerTranslations();
         $this->registerConfig();
-        $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
     }
 
@@ -40,8 +43,7 @@ class UserServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
 
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-        $this->app->bind(TeacherRepositoryInterface::class, TeacherRepository::class);
+        $this->app->bind(SearchCriteriaInterface::class, SearchCriteria::class);
     }
 
     /**
@@ -84,43 +86,23 @@ class UserServiceProvider extends ServiceProvider
      */
     protected function registerConfig(): void
     {
-        $configPath = module_path($this->name, config('modules.paths.generator.config.path'));
+        $relativeConfigPath = config('modules.paths.generator.config.path');
+        $configPath = module_path($this->name, $relativeConfigPath);
 
         if (is_dir($configPath)) {
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($configPath));
 
             foreach ($iterator as $file) {
                 if ($file->isFile() && $file->getExtension() === 'php') {
-                    $config = str_replace($configPath.DIRECTORY_SEPARATOR, '', $file->getPathname());
-                    $config_key = str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $config);
-                    $segments = explode('.', $this->nameLower.'.'.$config_key);
+                    $relativePath = str_replace($configPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
+                    $configKey = $this->nameLower . '.' . str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $relativePath);
+                    $key = ($relativePath === 'config.php') ? $this->nameLower : $configKey;
 
-                    // Remove duplicated adjacent segments
-                    $normalized = [];
-                    foreach ($segments as $segment) {
-                        if (end($normalized) !== $segment) {
-                            $normalized[] = $segment;
-                        }
-                    }
-
-                    $key = ($config === 'config.php') ? $this->nameLower : implode('.', $normalized);
-
-                    $this->publishes([$file->getPathname() => config_path($config)], 'config');
-                    $this->merge_config_from($file->getPathname(), $key);
+                    $this->publishes([$file->getPathname() => config_path($relativePath)], 'config');
+                    $this->mergeConfigFrom($file->getPathname(), $key);
                 }
             }
         }
-    }
-
-    /**
-     * Merge config from the given path recursively.
-     */
-    protected function merge_config_from(string $path, string $key): void
-    {
-        $existing = config($key, []);
-        $module_config = require $path;
-
-        config([$key => array_replace_recursive($existing, $module_config)]);
     }
 
     /**
@@ -135,7 +117,8 @@ class UserServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
 
-        Blade::componentNamespace(config('modules.namespace').'\\' . $this->name . '\\View\\Components', $this->nameLower);
+        $componentNamespace = $this->module_namespace($this->name, $this->app_path(config('modules.paths.generator.component-class.path')));
+        Blade::componentNamespace($componentNamespace, $this->nameLower);
     }
 
     /**

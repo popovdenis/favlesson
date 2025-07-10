@@ -4,6 +4,8 @@ namespace Modules\Group\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Group\Contracts\GroupRepositoryInterface;
+use Modules\Group\Models\GroupRepository;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -35,6 +37,8 @@ class GroupServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind(GroupRepositoryInterface::class, GroupRepository::class);
     }
 
     /**

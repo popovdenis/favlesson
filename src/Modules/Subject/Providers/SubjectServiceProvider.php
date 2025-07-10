@@ -4,6 +4,8 @@ namespace Modules\Subject\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Subject\Contracts\SubjectRepositoryInterface;
+use Modules\Subject\Models\SubjectRepository;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +38,8 @@ class SubjectServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind(SubjectRepositoryInterface::class, SubjectRepository::class);
     }
 
     /**

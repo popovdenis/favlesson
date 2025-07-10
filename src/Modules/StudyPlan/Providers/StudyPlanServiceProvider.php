@@ -4,6 +4,10 @@ namespace Modules\StudyPlan\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\StudyPlan\Contracts\LessonSlotRepositoryInterface;
+use Modules\StudyPlan\Contracts\StudyPlanRepositoryInterface;
+use Modules\StudyPlan\Models\LessonSlotRepository;
+use Modules\StudyPlan\Models\StudyPlanRepository;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +40,9 @@ class StudyPlanServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind(StudyPlanRepositoryInterface::class, StudyPlanRepository::class);
+        $this->app->bind(LessonSlotRepositoryInterface::class, LessonSlotRepository::class);
     }
 
     /**

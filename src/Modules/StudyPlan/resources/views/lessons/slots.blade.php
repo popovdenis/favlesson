@@ -1,6 +1,6 @@
 <x-theme::app-layout>
     <div class="container">
-        <h1 class="mb-4">Расписание занятий</h1>
+        <h1 class="mb-4">{{ __('Curriculum') }}</h1>
 
         <form method="GET" action="{{ route('lessons.slots') }}" class="row g-3 mb-4">
             <div class="col-md-4">
@@ -21,7 +21,7 @@
             </div>
 
             <div class="col-md-4 align-self-end">
-                <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
+                <button type="submit" class="btn btn-primary w-100">{{ __('Apply') }}</button>
             </div>
         </form>
 
@@ -32,10 +32,10 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>Группа</th>
-                        <th>Предмет</th>
-                        <th>Преподаватель</th>
-                        <th>Время</th>
+                        <th>{{ __('Group') }}</th>
+                        <th>{{ __('Subject') }}</th>
+                        <th>{{ __('Teacher') }}</th>
+                        <th>{{ __('Time') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -53,7 +53,7 @@
             </div>
         @empty
             <div class="alert alert-warning">
-                Расписание не найдено по выбранным условиям.
+                {{ __('No lessons found') }}
             </div>
         @endforelse
     </div>
