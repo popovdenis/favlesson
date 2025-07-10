@@ -2,17 +2,41 @@
 
 namespace Modules\StudyPlan\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Modules\Base\Http\Controllers\Controller;
+use Modules\Group\Models\Group;
+use Modules\StudyPlan\Models\LessonSlot;
 
 class StudyPlanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('studyplan::index');
+        $groups = Group::orderBy('title')->get();
+        $selectedGroupId = $request->get('group_id');
+        $selectedDate = $request->get('date');
+
+        $query = LessonSlot::with(['group', 'subject', 'teacher'])->orderBy('date')->orderBy('slot_order');
+
+        if ($selectedGroupId) {
+            $query->where('group_id', $selectedGroupId);
+        }
+
+        if ($selectedDate) {
+            $query->whereDate('date', $selectedDate);
+        }
+
+        $slots = $query->get()
+            ->groupBy('date');
+
+        return view('studyplan::lessons.slots', compact(
+            'groups',
+            'selectedGroupId',
+            'selectedDate',
+            'slots'
+        ));
     }
 
     /**
